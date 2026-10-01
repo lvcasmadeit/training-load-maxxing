@@ -21,16 +21,21 @@ Vite prints the local URL (normally `http://localhost:5173`). The backend should
 ## Source layout
 
 - `src/app/` — application shell and route declarations.
-- `src/features/home/`, `src/features/team/`, `src/features/athlete/`, `src/features/insights/` — feature-specific pages and UI.
-- `src/shared/components/` — components shared across features.
+- `src/features/home/` — coach-focused marketing landing page.
+- `src/features/team/` — three-pane workspace with a toggleable roster and insights panel.
+- `src/features/athlete/` — selected athlete metrics and workload history.
+- `src/features/insights/` — scrollable athlete insights and Markdown rendering.
+- `src/shared/components/` — shared navigation and UI components.
 - `src/utils/api.js` — browser API client.
-- `src/index.css` — global styles.
+- `src/index.css` — global and responsive styles.
 
 ## Routes
 
-- `/` — home page.
-- `/team` — team overview.
-- `/team/:id` — athlete details and insights.
+- `/` — Squad Pulse landing page; “Explore the demo” opens the workspace.
+- `/team` — team workspace, initially selecting the first athlete.
+- `/team/:id` — team workspace focused on the selected athlete.
+
+The workspace presents the roster on the left, athlete details in the main pane, and athlete insights on the right. The roster and insights panes can be hidden from the workspace toolbar; on narrow screens, open one panel at a time.
 
 ## API configuration
 

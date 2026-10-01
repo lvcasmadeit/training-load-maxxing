@@ -8,15 +8,19 @@ export default function PerformanceChart({ history }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) return undefined;
 
-    const handleResize = () => {
-      setWidth(containerRef.current.clientWidth);
-    };
-
+    const handleResize = () => setWidth(Math.max(320, containerRef.current?.clientWidth || 700));
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   if (!history || history.length === 0) return null;
@@ -133,7 +137,7 @@ export default function PerformanceChart({ history }) {
                   y1={y} 
                   x2={width - paddingRight} 
                   y2={y} 
-                  stroke="rgba(255,255,255,0.08)" 
+                  stroke="var(--chart-grid)"
                   strokeWidth="1"
                   strokeDasharray="4"
                 />
@@ -191,7 +195,7 @@ export default function PerformanceChart({ history }) {
                 y1={paddingTop}
                 x2={getX(hoveredIndex)}
                 y2={height - paddingBottom}
-                stroke="rgba(255,255,255,0.18)"
+                stroke="var(--border-strong)"
                 strokeWidth="1"
                 strokeDasharray="3"
               />

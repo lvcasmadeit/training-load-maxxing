@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { BrainCircuit, Eye, EyeOff, Key, RefreshCw, Sparkles } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 
-export default function AICoachPanel({ insights, loading, onRefresh, apiKey, onApiKeyChange }) {
+export default function AICoachPanel({ insights, loading, error, onRefresh, apiKey, onApiKeyChange }) {
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
   const [showMaskedKey, setShowMaskedKey] = useState(false);
@@ -98,18 +98,23 @@ export default function AICoachPanel({ insights, loading, onRefresh, apiKey, onA
         </form>
       )}
 
-      {insights && insights.markdown && (
+      {error && <p className="insights-panel__error" role="status">{error}</p>}
+
+      {insights && insights.markdown ? (
         <>
           <MarkdownRenderer markdown={insights.markdown} />
 
           <button
             className="btn btn-secondary refresh-button"
             onClick={onRefresh}
+            disabled={loading}
           >
             <RefreshCw size={13} /> Refresh insights
           </button>
         </>
-      )}
+      ) : !loading && !error ? (
+        <p className="insights-panel__empty">Select an athlete to see readiness and workload context.</p>
+      ) : null}
     </section>
   );
 }
