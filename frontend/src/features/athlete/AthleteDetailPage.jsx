@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Activity, ArrowLeft, Heart, Moon, ShieldAlert } from 'lucide-react';
-import AICoachPanel from '../components/AICoachPanel';
-import MetricCard from '../components/MetricCard';
-import PerformanceChart from '../components/PerformanceChart';
-import { fetchAthleteHistory, fetchAthleteInsights, fetchAthletes } from '../utils/api';
+import AICoachPanel from '../insights/AICoachPanel';
+import MetricCard from './MetricCard';
+import PerformanceChart from './PerformanceChart';
+import { fetchAthleteHistory, fetchAthleteInsights, fetchAthletes } from '../../utils/api';
 
 export default function AthleteDetailPage() {
   const { id } = useParams();

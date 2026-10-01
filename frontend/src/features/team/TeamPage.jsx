@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import AthleteCard from '../components/AthleteCard';
-import { fetchAthletes } from '../utils/api';
+import AthleteCard from './AthleteCard';
+import { fetchAthletes } from '../../utils/api';
 
 export default function TeamPage() {
   const [athletes, setAthletes] = useState([]);
