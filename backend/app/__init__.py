@@ -1,0 +1,1 @@
+"""SquadPulse backend application package."""
