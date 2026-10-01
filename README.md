@@ -1,47 +1,100 @@
-# Squad Pulse 
+# Squad Pulse
 
-## 📋 Project Overview
-**Squad Pulse** is an institutional-grade sports science and training-load management platform designed for high school, collegiate, and professional athletic programs. The core purpose of this project is to democratize elite-level performance analytics. Traditional athletic departments are frequently forced to invest in cost-prohibitive proprietary diagnostic devices, wearable vests (e.g., Catapult), and subscription-heavy external diagnostics to track squad safety. Squad Pulse eliminates these barriers by translating standard telemetry into highly accurate physiological strains, fatigue zones, and structured coaching frameworks.
+Squad Pulse is a prototype dashboard for reviewing team training load, recovery, and athlete insights. It currently uses **synthetic smartwatch-style data**; it does not connect to Apple Health, Garmin, Fitbit, or other wearable services.
 
----
+## What the prototype does
 
-## ⌚ The Core Innovation: Leveraged from Regular Smartwatch Metrics
-Unlike enterprise athletic platforms that require specialized hardware, **Squad Pulse is built entirely to leverage consumer-grade, regular smartwatch metrics** (such as Apple Watch, Garmin, or Fitbit). By pulling standard telemetry streams out of consumer health frameworks, the platform constructs an advanced diagnostic matrix without demanding a proprietary equipment budget:
+- Generates 45 days of sample history for eight demo athletes.
+- Calculates daily, acute (7-day), and chronic (28-day) workload, ACWR zones, and a readiness score.
+- Serves athlete summaries, histories, insights, workout updates, and simulated live-tick data through a FastAPI API.
+- Provides local rule-based insights, with optional Gemini-generated insights and a local fallback.
 
-* **Heart Rate Variability (HRV):** Extracted directly from resting morning smartwatch states to gauge central nervous system recovery and autonomic nervous system (ANS) balance.
-* **Resting Heart Rate (RHR):** Monitored during sleep cycles to detect cardiovascular adaptation, cumulative fatigue accumulation, or systemic overtraining stress.
-* **Sleep Architecture:** Captures standard consumer parameters like sleep duration and sleep quality scores to map out hormonal tissue reconstruction periods and mental recovery bounds.
-* **Active Output Logs:** Ingests raw session variables—such as training duration, active calories, and steps—directly from standard workout logging apps.
+The data is held in memory and is regenerated when the backend starts or is reset. Metrics and recommendations are for demonstration and educational use, not medical advice or validated injury predictions.
 
----
+## Repository layout
 
-## 🚀 Key Features
+```text
+backend/
+  app/
+    api/routes.py          # HTTP routes
+    services/              # Athlete state, workout updates, insights selection
+    config.py              # Environment and CORS configuration
+    data_pipeline.py       # Synthetic profiles and history generation
+    formulas.py            # Workload and readiness calculations
+    insights_llm.py        # Gemini and local insights engines
+    models.py              # API request/response schemas
+  tests/                   # Formula, configuration, and API tests
+  requirements.txt
+  requirements-dev.txt
+  README.md
+frontend/
+  src/
+    app/App.jsx            # Application routes
+    features/              # Home, team, athlete, and insights UI
+    shared/components/     # UI shared across features
+    utils/api.js           # Browser API client
+  README.md
+CONTEXT.md                 # Product vocabulary
+vercel.json                # Frontend deployment configuration
+```
 
-### 1. Mathematical Acute:Chronic Workload Ratio (ACWR) Engine
-The backend pipeline implements modern sports-science mathematics to monitor tissue fatigue and minimize soft-tissue injury risk:
-* **Daily Load Computation:** Combines standard workout duration metrics with Rate of Perceived Exertion (RPE) to calculate an integrated objective load unit per session.
-* **Rolling Average Windows:** Aggregates daily loads over a 7-day window to measure acute fatigue, alongside a 28-day window to monitor chronic fitness adaptation.
-* **Safety Zone Boundaries:** Automatically maps ratios into verified athletic safety profiles, sorting players across *Under-training*, *Sweet Spot (Optimal Performance)*, *Buffer Zone*, and *Danger Zone* thresholds.
+The frontend and backend are separate applications with their own dependencies, but remain in one repository.
 
-### 2. Weighted Readiness Index & Overreaching Penalty
-Instead of keeping telemetry metrics completely isolated, Squad Pulse fuses sleep quality and normalized HRV scores into a comprehensive **Readiness Score (0-100%)** right on the main screen. Crucially, the mathematical engine subtracts an *ACWR Deviation Penalty* if an athlete overreaches into unsafe training load boundaries, providing an immediate visual warning of physical vulnerability.
+## Run locally
 
-### 3. LLM AI Head of Performance Panel
-The system features an integrated conversational intelligence coordinator that maps quantitative tracking data straight into actionable natural language coaching plans:
-* **Online Gemini Integration:** Leverages the `gemini-1.5-flash` model to analyze historical profiles and generate institutional sports science briefs.
-* **Position-Specific Context Guardrails:** The prompting architecture constrains assessments based on physical demands—warning coaches of hamstring tear threats for high-speed sprinting wingers, aerobic exhaustion dangers for midfielders, and explosive central nervous system or reaction lags for goalkeepers.
-* **Adaptive 7-Day Calendar Overrides:** Generates periodized recovery or training blocks based on current workload states. If a player triggers a "Danger Zone" indicator, the system forces a strict active recovery/squad exemption protocol to lower rolling fatigue safely.
+Use two terminals.
 
-### 4. Dual-Engine Architecture Resilience
-To protect presentations from network failure or API credential drops, the platform includes a local heuristic failover framework (`generate_local_insights`). If live API calls experience a connection issue, a rule-based engine drops right in to compute identical markdown formats, status banners, strengths, weaknesses, and calendar grids smoothly.
+**Backend** — see [backend/README.md](backend/README.md) for environment and test setup:
 
----
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python run.py
+```
 
-## 🛠️ Project Structure & Architecture
-The system follows a standard decoupled frontend-backend setup designed for low latency and high telemetry fidelity:
+The API listens at `http://127.0.0.1:8000`; interactive API docs are at `http://127.0.0.1:8000/docs`.
 
-* **`backend/app/formulas.py`**: The quantitative core; manages math calculations for rolling averages, ACWR limits, and normalized biometric readiness scores.
-* **`backend/app/data_pipeline.py`**: Generates high-fidelity 45-day synthetic history tracks across 8 diverse athlete profiles to model sleep deprivation, detraining effects, and chronic overtraining states. Includes a live tick simulator to process real-time intra-workout heart rates and step cadences.
-* **`backend/app/insights_llm.py`**: Manages prompt orchestrations for live Gemini execution alongside rule-based sports science fallbacks.
-* **`frontend/src/App.jsx`**: Coordinates global dashboard view filters, roster card expansions, multi-metric monitoring tracks, and active simulation hooks.
-* **`frontend/src/components/AICoachPanel.jsx`**: Houses a custom lightweight markdown tokenizer (`SoccerMarkdownRenderer`) that parses generated structural performance grids and converts them into rich responsive UI elements without relying on heavy external dependencies.
+**Frontend:**
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Open the Vite URL printed in the terminal (normally `http://localhost:5173`). Vite proxies `/api` requests to `http://localhost:8000` by default. See [frontend/README.md](frontend/README.md) for frontend configuration.
+
+## Checks
+
+With the backend virtual environment active:
+
+```bash
+cd backend
+python -m pytest -q
+```
+
+Frontend checks, from `frontend/`:
+
+```bash
+npm run lint
+npm run build
+```
+
+## API overview
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/athletes` | Team athlete summaries |
+| `GET` | `/api/athletes/{athlete_id}/history` | Daily history for one athlete |
+| `GET` | `/api/athletes/{athlete_id}/insights` | Coaching insights |
+| `POST` | `/api/athletes/{athlete_id}/workout` | Add a workout to the demo history |
+| `POST` | `/api/athletes/{athlete_id}/live-tick` | Generate simulated live workout metrics |
+| `POST` | `/api/athletes/reset` | Regenerate the in-memory demo data |
+
+## Configuration and deployment
+
+The Vite development proxy targets `http://localhost:8000` by default. Override it with `VITE_API_PROXY_TARGET` in the frontend environment for local development. The browser API base defaults to `/api`; set `VITE_API_BASE_URL` to an absolute API base ending in `/api` when the deployed frontend and backend use different origins.
+
+`vercel.json` builds the frontend only. Deploy the FastAPI backend separately, set `VITE_API_BASE_URL` in the frontend build environment, and set `SQUADPULSE_CORS_ORIGINS` on the backend to the exact frontend origin(s). The backend also accepts the optional server-side `GEMINI_API_KEY`; never put that secret in a `VITE_` variable. Examples are in `backend/.env.example` and `frontend/.env.example`.
