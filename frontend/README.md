@@ -15,6 +15,7 @@ Vite prints the local URL (normally `http://localhost:5173`). The backend should
 
 - `npm run dev` — start the local Vite server.
 - `npm run lint` — run ESLint.
+- `npm run typecheck` — run strict TypeScript checks.
 - `npm run build` — create the production bundle in `dist/`.
 - `npm run preview` — serve the built frontend locally.
 
@@ -26,7 +27,7 @@ Vite prints the local URL (normally `http://localhost:5173`). The backend should
 - `src/features/athlete/` — selected athlete metrics and workload history.
 - `src/features/insights/` — scrollable athlete insights and Markdown rendering.
 - `src/shared/components/` — shared navigation and UI components.
-- `src/utils/api.js` — browser API client.
+- `src/utils/api.ts` — browser API client.
 - `src/index.css` — global and responsive styles.
 
 ## Routes

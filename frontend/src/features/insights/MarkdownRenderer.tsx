@@ -1,17 +1,17 @@
-/* eslint-disable react/prop-types */
 import { AlertTriangle, Calendar, CheckCircle2, FileText, Sparkles } from 'lucide-react';
+import type { ReactElement, ReactNode } from 'react';
 
-export default function MarkdownRenderer({ markdown }) {
+export default function MarkdownRenderer({ markdown }: { markdown: string }) {
   if (!markdown) return null;
 
   const lines = markdown.split('\n');
-  const renderedElements = [];
+  const renderedElements: ReactElement<{ className?: string }>[] = [];
 
-  let listItems = [];
-  let tableHeaders = [];
-  let tableRows = [];
+  let listItems: string[] = [];
+  let tableHeaders: string[] = [];
+  let tableRows: string[][] = [];
 
-  const flushList = (key) => {
+  const flushList = (key: number) => {
     if (listItems.length > 0) {
       const isWeaknessList = renderedElements.some(el =>
         el.props && el.props.className && el.props.className.includes('header-improvement')
@@ -23,7 +23,7 @@ export default function MarkdownRenderer({ markdown }) {
         <ul key={`list-${key}`} className="markdown-list" data-status={isWeaknessList ? 'warning' : 'success'}>
           {listItems.map((item, itemIdx) => {
             const boldMatch = item.match(/^\*\*(.*?)\*\*:(.*)/);
-            let boldContent = item;
+            let boldContent: ReactNode = item;
 
             if (boldMatch) {
               boldContent = (
@@ -49,7 +49,7 @@ export default function MarkdownRenderer({ markdown }) {
     }
   };
 
-  const flushTable = (key) => {
+  const flushTable = (key: number) => {
     if (tableRows.length > 0 || tableHeaders.length > 0) {
       renderedElements.push(
         <div key={`table-wrapper-${key}`} className="table-responsive">

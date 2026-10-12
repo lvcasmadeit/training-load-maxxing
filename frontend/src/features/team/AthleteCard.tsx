@@ -1,13 +1,20 @@
-/* eslint-disable react/prop-types */
 import { NavLink } from 'react-router-dom';
+import type { MouseEventHandler } from 'react';
+import type { AthleteSummary } from '../../types/api';
 
-function getReadinessStatus(score) {
+type AthleteCardProps = {
+  athlete: AthleteSummary;
+  onSelect?: MouseEventHandler<HTMLAnchorElement>;
+};
+
+
+function getReadinessStatus(score: number) {
   if (score >= 80) return 'success';
   if (score >= 50) return 'warning';
   return 'danger';
 }
 
-export default function AthleteCard({ athlete, onSelect }) {
+export default function AthleteCard({ athlete, onSelect }: AthleteCardProps) {
   const score = athlete.current_status.readiness_score;
   const status = getReadinessStatus(score);
   const radius = 21;

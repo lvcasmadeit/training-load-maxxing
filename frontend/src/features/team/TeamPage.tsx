@@ -5,6 +5,7 @@ import AthleteDetailPage from '../athlete/AthleteDetailPage';
 import AICoachPanel from '../insights/AICoachPanel';
 import AthleteCard from './AthleteCard';
 import { fetchAthleteHistory, fetchAthleteInsights, fetchAthletes } from '../../utils/api';
+import type { AIInsightsResponse, AthleteHistoryEntry, AthleteSummary } from '../../types/api';
 
 function isCompactViewport() {
   return typeof window !== 'undefined'
@@ -12,7 +13,7 @@ function isCompactViewport() {
     && window.matchMedia('(max-width: 1020px)').matches;
 }
 
-function formatDate(value) {
+function formatDate(value: string | undefined) {
   if (!value) return 'Today';
   return new Date(`${value}T00:00:00`).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -24,14 +25,14 @@ function formatDate(value) {
 export default function TeamPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [athletes, setAthletes] = useState([]);
+  const [athletes, setAthletes] = useState<AthleteSummary[]>([]);
   const [rosterLoading, setRosterLoading] = useState(true);
   const [rosterError, setRosterError] = useState('');
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<AthleteHistoryEntry[]>([]);
   const [historyFor, setHistoryFor] = useState('');
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState('');
-  const [insights, setInsights] = useState(null);
+  const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [insightsFor, setInsightsFor] = useState('');
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState('');
@@ -49,7 +50,7 @@ export default function TeamPage() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1020px)');
-    const handleViewportChange = (event) => {
+    const handleViewportChange = (event: MediaQueryListEvent) => {
       setIsCompact(event.matches);
       if (event.matches) {
         setRosterOpen(false);
@@ -159,7 +160,7 @@ export default function TeamPage() {
     setInsightsOpen((open) => !open);
   };
 
-  const handleApiKeyChange = (newKey) => {
+  const handleApiKeyChange = (newKey: string) => {
     setGeminiApiKey(newKey);
     try {
       localStorage.setItem('gemini_api_key', newKey);

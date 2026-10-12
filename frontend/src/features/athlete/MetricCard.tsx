@@ -1,5 +1,25 @@
-/* eslint-disable react/prop-types */
-export default function MetricCard({ title, value, unit, icon: Icon, colorClass, subtitle, progressValue }) {
+import type { CSSProperties } from 'react';
+import type { LucideIcon } from 'lucide-react';
+
+type MetricCardProps = {
+  title: string;
+  value: string | number;
+  unit?: string;
+  icon?: LucideIcon;
+  colorClass?: string;
+  subtitle?: string;
+  progressValue?: number;
+};
+
+export default function MetricCard({
+  title,
+  value,
+  unit,
+  icon: Icon,
+  colorClass,
+  subtitle,
+  progressValue,
+}: MetricCardProps) {
   const progress = `${Math.min(100, Math.max(0, progressValue ?? 0))}%`;
 
   return (
@@ -22,7 +42,7 @@ export default function MetricCard({ title, value, unit, icon: Icon, colorClass,
       {progressValue !== undefined && (
         <div>
           <div className="metric-card__progress">
-            <div className="metric-card__progress-fill" style={{ '--progress': progress }} />
+            <div className="metric-card__progress-fill" style={{ '--progress': progress } as CSSProperties & { '--progress': string }} />
           </div>
           <div className="metric-card__scale">
             <span>0</span>

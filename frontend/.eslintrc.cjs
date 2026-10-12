@@ -17,4 +17,12 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: { ecmaFeatures: { jsx: true } },
+      rules: { 'react/prop-types': 'off' },
+    },
+  ],
 }

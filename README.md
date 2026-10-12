@@ -29,10 +29,10 @@ backend/
   README.md
 frontend/
   src/
-    app/App.jsx            # Application routes
+    app/App.tsx            # Application routes
     features/              # Home, team, athlete, and insights UI
     shared/components/     # UI shared across features
-    utils/api.js           # Browser API client
+    utils/api.ts           # Browser API client
   README.md
 CONTEXT.md                 # Product vocabulary
 vercel.json                # Frontend deployment configuration
@@ -78,6 +78,7 @@ python -m pytest -q
 Frontend checks, from `frontend/`:
 
 ```bash
+npm run typecheck
 npm run lint
 npm run build
 ```

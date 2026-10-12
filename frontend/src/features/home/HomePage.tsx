@@ -1,8 +1,16 @@
-/* eslint-disable react/prop-types */
 import { Activity, ArrowRight, ArrowUpRight, BrainCircuit, HeartPulse, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 
-const capabilities = [
+type Capability = {
+  number: string;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+};
+
+
+const capabilities: Capability[] = [
   {
     number: '01',
     icon: Activity,
@@ -23,7 +31,7 @@ const capabilities = [
   },
 ];
 
-function ReadinessRing({ score, label }) {
+function ReadinessRing({ score, label }: { score: number; label: string }) {
   const radius = 38;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference - (score / 100) * circumference;

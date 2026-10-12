@@ -1,9 +1,15 @@
-/* eslint-disable react/prop-types */
 import { Activity, Heart, Moon, ShieldAlert } from 'lucide-react';
 import MetricCard from './MetricCard';
 import PerformanceChart from './PerformanceChart';
+import type { AthleteHistoryEntry, AthleteSummary } from '../../types/api';
 
-export default function AthleteDetailPage({ athlete, history }) {
+type AthleteDetailPageProps = {
+  athlete: AthleteSummary | undefined;
+  history: AthleteHistoryEntry[];
+};
+
+
+export default function AthleteDetailPage({ athlete, history }: AthleteDetailPageProps) {
   if (!athlete) return null;
 
   const { current_status: currentStatus, averages } = athlete;

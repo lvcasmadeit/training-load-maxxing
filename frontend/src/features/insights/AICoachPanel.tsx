@@ -1,14 +1,32 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+import type { AIInsightsResponse } from '../../types/api';
 import { BrainCircuit, Eye, EyeOff, Key, RefreshCw, Sparkles } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
+type AICoachPanelProps = {
+  insights: AIInsightsResponse | null;
+  loading: boolean;
+  error: string;
+  onRefresh: () => void;
+  apiKey: string;
+  // eslint-disable-next-line no-unused-vars
+  onApiKeyChange: (newKey: string) => void;
+};
 
-export default function AICoachPanel({ insights, loading, error, onRefresh, apiKey, onApiKeyChange }) {
+
+export default function AICoachPanel({
+  insights,
+  loading,
+  error,
+  onRefresh,
+  apiKey,
+  onApiKeyChange,
+}: AICoachPanelProps) {
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
   const [showMaskedKey, setShowMaskedKey] = useState(false);
 
-  const handleSaveKey = (e) => {
+  const handleSaveKey = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onApiKeyChange(tempKey);
     setShowKeyInput(false);
@@ -78,7 +96,7 @@ export default function AICoachPanel({ insights, loading, error, onRefresh, apiK
             <input
               type={showMaskedKey ? 'text' : 'password'}
               value={tempKey}
-              onChange={(e) => setTempKey(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setTempKey(e.currentTarget.value)}
               placeholder="Paste Gemini key"
               className="input-field"
             />

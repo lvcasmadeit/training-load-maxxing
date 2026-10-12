@@ -1,11 +1,12 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
+import type { AthleteHistoryEntry } from '../../types/api';
 
-export default function PerformanceChart({ history }) {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+export default function PerformanceChart({ history }: { history: AthleteHistoryEntry[] }) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(700);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return undefined;
@@ -41,8 +42,8 @@ export default function PerformanceChart({ history }) {
   const yMax = Math.ceil(maxLoad / 200) * 200;
   const xDenominator = Math.max(1, history.length - 1);
 
-  const getX = (index) => paddingLeft + (index / xDenominator) * chartWidth;
-  const getY = (value) => height - paddingBottom - (value / yMax) * chartHeight;
+  const getX = (index: number) => paddingLeft + (index / xDenominator) * chartWidth;
+  const getY = (value: number) => height - paddingBottom - (value / yMax) * chartHeight;
 
   const acutePoints = acuteValues.map((val, idx) => `${getX(idx)},${getY(val)}`).join(' ');
   const chronicPoints = chronicValues.map((val, idx) => `${getX(idx)},${getY(val)}`).join(' ');
@@ -50,7 +51,7 @@ export default function PerformanceChart({ history }) {
   const acuteAreaPoints = `${getX(0)},${height - paddingBottom} ${acutePoints} ${getX(history.length - 1)},${height - paddingBottom}`;
   const chronicAreaPoints = `${getX(0)},${height - paddingBottom} ${chronicPoints} ${getX(history.length - 1)},${height - paddingBottom}`;
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - paddingLeft;
@@ -77,12 +78,12 @@ export default function PerformanceChart({ history }) {
     setHoveredIndex(null);
   };
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   };
 
-  const gridLines = [];
+  const gridLines: number[] = [];
   for (let i = 0; i <= 4; i++) {
     gridLines.push(yMax * (i / 4));
   }
@@ -101,11 +102,11 @@ export default function PerformanceChart({ history }) {
 
         <div className="chart-legend">
           <div className="legend-item">
-            <span className="legend-line" style={{ '--legend-color': 'var(--text)' }} />
+            <span className="legend-line" style={{ '--legend-color': 'var(--text)' } as CSSProperties & { '--legend-color': string }} />
             <span>Acute Fatigue (7d)</span>
           </div>
           <div className="legend-item">
-            <span className="legend-line" style={{ '--legend-color': 'var(--text-muted)' }} />
+            <span className="legend-line" style={{ '--legend-color': 'var(--text-muted)' } as CSSProperties & { '--legend-color': string }} />
             <span>Chronic Fitness (28d)</span>
           </div>
         </div>
@@ -227,7 +228,7 @@ export default function PerformanceChart({ history }) {
             style={{
               '--tooltip-x': `${Math.min(tooltipPos.x, width - 210)}px`,
               '--tooltip-y': `${Math.max(10, tooltipPos.y)}px`,
-            }}
+            } as CSSProperties & { '--tooltip-x': string; '--tooltip-y': string }}
           >
             <div className="tooltip__date">{formatDate(hoveredDay.date)}</div>
 
@@ -238,7 +239,7 @@ export default function PerformanceChart({ history }) {
               </div>
               <div className="tooltip__row">
                 <span className="tooltip__label">Chronic (28d)</span>
-                <span className="tooltip__value" style={{ '--tooltip-color': 'var(--text-muted)' }}>
+                <span className="tooltip__value" style={{ '--tooltip-color': 'var(--text-muted)' } as CSSProperties & { '--tooltip-color': string }}>
                   {hoveredDay.chronic_workload}
                 </span>
               </div>
